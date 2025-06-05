@@ -68,6 +68,12 @@ def show_people():
 
 @app.route('/add', methods=['GET', 'POST'])
 def add_person():
+
+    try:
+        stats = db.command('collstats', collection_name)
+    except Exception as e:
+        stats = {'error': str(e)}
+
     if request.method == 'POST':
         try:
             new_person = {
@@ -81,7 +87,7 @@ def add_person():
             return redirect(url_for('show_people'))
         except Exception as e:
             flash(f"Error adding person: {str(e)}", "danger")
-    return render_template('add.html')
+    return render_template('add.html', db_status=db_status, stats=stats)
 
 @app.route('/edit/<person_id>', methods=['GET', 'POST'])
 def edit_person(person_id):
