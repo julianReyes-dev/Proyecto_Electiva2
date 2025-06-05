@@ -1,0 +1,30 @@
+/* Custom styles */
+body {
+    padding-top: 0;
+}
+
+.card {
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.card-header {
+    font-weight: bold;
+}
+
+.table-responsive {
+    margin-bottom: 20px;
+}
+
+.badge {
+    font-size: 0.9em;
+}
+
+.alert {
+    margin-top: 20px;
+}
+
+footer {
+    margin-top: 50px;
+    border-top: 1px solid #eee;
+}

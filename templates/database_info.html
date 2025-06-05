@@ -1,0 +1,112 @@
+{% extends "layout.html" %}
+
+{% block title %}Database Information{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h1>Database Information</h1>
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <span class="badge bg-{% if db_status.connected %}success{% else %}danger{% endif %}">
+                {% if db_status.connected %}Connected{% else %}Disconnected{% endif %}
+            </span>
+            <span class="badge bg-info ms-2">MongoDB v{{ db_status.server_info.version }}</span>
+        </div>
+        <a href="{{ url_for('show_people') }}" class="btn btn-primary">Back to People</a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Database Stats</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Database Name
+                        <span class="badge bg-secondary">{{ db_stats.db }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Collections
+                        <span class="badge bg-primary">{{ db_stats.collections }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Documents
+                        <span class="badge bg-info">{{ db_stats.objects }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Storage Size
+                        <span class="badge bg-warning">{{ (db_stats.storageSize / 1024 / 1024)|round(2) }} MB</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Collection Stats</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Collection Name
+                        <span class="badge bg-secondary">{{ stats.ns }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Documents
+                        <span class="badge bg-info">{{ stats.count }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Size
+                        <span class="badge bg-warning">{{ (stats.size / 1024)|round(2) }} KB</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Avg Doc Size
+                        <span class="badge bg-primary">{{ (stats.avgObjSize)|round(2) }} bytes</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">Active Sessions ({{ sessions|length }})</h5>
+    </div>
+    <div class="card-body">
+        {% if sessions %}
+        <div class="table-responsive">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>OpID</th>
+                        <th>Type</th>
+                        <th>Namespace</th>
+                        <th>Running For</th>
+                        <th>Client</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for session in sessions %}
+                    <tr>
+                        <td>{{ session.opid }}</td>
+                        <td>{{ session.op }}</td>
+                        <td>{{ session.ns|default('N/A', true) }}</td>
+                        <td>{{ session.secs_running }}s</td>
+                        <td>{{ session.client|default('N/A', true) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info">No active sessions found</div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
